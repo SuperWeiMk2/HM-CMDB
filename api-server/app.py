@@ -1,4 +1,4 @@
-import default
+import defaultInterface
 from api.account_api import AccountAPI
 from api.audit_api import AuditAPI
 from api.auth_api import AuthAPI
@@ -24,7 +24,7 @@ Server.app.register_blueprint(SafeGroupAPI.api)
 Server.app.register_blueprint(ServiceAPI.api)
 Server.app.register_blueprint(TaskAPI.api)
 Server.app.register_blueprint(OverViewAPI.api)
-Server.app.register_blueprint(default.DefaultInterface.api)
+Server.app.register_blueprint(defaultInterface.DefaultInterface.api)
 
 app = Server.app
 

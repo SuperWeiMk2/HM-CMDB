@@ -6,7 +6,7 @@ class GroupModel:
 
     @staticmethod
     def get_group_by_name(name) -> Group:
-        result = Server.datasource["default.py"].db["group"].find_one({"_id": name})
+        result = Server.datasource["default"].db["group"].find_one({"_id": name})
 
         return Group(name=result["_id"],
                      usage=result["usage"],
@@ -15,7 +15,7 @@ class GroupModel:
 
     @staticmethod
     def all_group():
-        result = Server.datasource["default.py"].db["group"].find({"is_delete": False})
+        result = Server.datasource["default"].db["group"].find({"is_delete": False})
 
         groups = []
 
@@ -28,6 +28,6 @@ class GroupModel:
 
     @staticmethod
     def get_group(usage: str):
-        result = Server.datasource["default.py"].db["group"].find({"usage": usage})
+        result = Server.datasource["default"].db["group"].find({"usage": usage})
 
         return result

@@ -1,7 +1,7 @@
 settings = {
     "datasource": [
         {
-            "name": "default.py",
+            "name": "default",
             "type": "mongodb",
             "host": "192.168.79.191",
             "port": "27017",
