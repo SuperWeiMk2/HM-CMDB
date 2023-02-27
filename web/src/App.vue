@@ -24,7 +24,8 @@ onMounted(() => {
 
 <template>
   <div class="app-view">
-    <n-config-provider style="width: 100%;" :theme="useDarkTheme ? darkTheme : null">
+<!--    <n-config-provider style="width: 100%;" :theme="useDarkTheme ? darkTheme : null">-->
+    <n-config-provider style="width: 100%;" :theme="darkTheme">
       <n-message-provider>
         <n-dialog-provider>
           <router-view style="width: 100%; height: 100%; flex: 1"/>

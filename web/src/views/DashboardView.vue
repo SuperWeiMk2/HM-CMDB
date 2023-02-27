@@ -179,7 +179,7 @@ onMounted(() => {
 <template>
   <div class="dashboard-view">
     <n-watermark
-        content="欢迎加入荣华富贵大家庭"
+        content="欢迎使用 HM CMDB"
         cross
         fullscreen
         :font-size="16"
