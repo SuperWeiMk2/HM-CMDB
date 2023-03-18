@@ -14,22 +14,31 @@ class GroupAPI:
     @staticmethod
     @api.route("/<name>", methods=('GET',))
     def get_group_by_name(name):
-        group = GroupService.get_group_by_name(StringUtil.smart_trim(name))
+        groups = GroupService.get_group_by_name(StringUtil.smart_trim(name))
 
-        group_dto = GroupDTO(
-            name=group.get_name(),
-            usage=group.get_usage(),
-            create_time=group.get_create_time(),
-            update_time=group.get_update_time(),
-        )
+        group_dto_list = []
 
-        return GenericJSONResponse(data=marshal(group_dto, fields=GroupDTO.fields)).build()
+        for group in groups:
+            group_dto_list.append(GroupDTO(
+                group.get_name(),
+                group.get_usage(),
+                group.get_create_time(),
+                group.get_update_time()))
+
+        return GenericJSONResponse(data=marshal(group_dto_list, fields=GroupDTO.fields)).build()
+        # group_dto = GroupDTO(
+        #     name=group.get_name(),
+        #     usage=group.get_usage(),
+        #     create_time=group.get_create_time(),
+        #     update_time=group.get_update_time(),
+        # )
+        #
+        # return GenericJSONResponse(data=marshal(group_dto, fields=GroupDTO.fields)).build()
 
     @staticmethod
     @api.route("/", methods=('GET',))
     def get_group():
         p_usage = RequestUtil.get_param_from_url_query_param(request, "usage")
-
         usage = StringUtil.smart_trim(p_usage)
 
         groups = GroupService.get_group(usage)
@@ -60,21 +69,29 @@ class GroupAPI:
         return {}
 
     @staticmethod
-    @api.route("/<name>", methods=('PUT',))
-    def update_group_by_name(name):
-        p_usage = RequestUtil.get_param_from_body_raw_json(request, "usage")
-        usage = StringUtil.smart_trim(p_usage)
+    @api.route("/update_group", methods=('PUT',))
+    def update_group():
+        document_condition = StringUtil.smart_trim(
+            RequestUtil.get_param_from_body_raw_json(request, "document_condition"))
+        update_usage = StringUtil.smart_trim(RequestUtil.get_param_from_body_raw_json(request, "new_usage"))
 
-        GroupService.update_group_by_name(StringUtil.smart_trim(name), usage)
+        name = StringUtil.smart_trim(document_condition)
+        usage = StringUtil.smart_trim(update_usage)
 
-        return {}
+        if GroupService.update_group(name, usage):
+            return {}
+        else:
+            return ""
 
     @staticmethod
-    @api.route("/<name>", methods=('DELETE',))
-    def delete_group_by_name(name):
-        GroupService.delete_group_by_name(StringUtil.smart_trim(name))
+    @api.route("/useNameDelete", methods=('DELETE',))
+    def delete_group_by_name():
+        delete_name = RequestUtil.get_param_from_url_query_param(request, name="name")
 
-        return {}
+        if GroupService.delete_group_by_name(StringUtil.smart_trim(delete_name)):
+            return {}
+        else:
+            return {}
 
     @staticmethod
     @api.route("/", methods=('DELETE',))
@@ -85,3 +102,5 @@ class GroupAPI:
             GroupService.delete_group(name_list)
 
         return {}
+
+

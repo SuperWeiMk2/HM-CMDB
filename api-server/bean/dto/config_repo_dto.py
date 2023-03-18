@@ -2,21 +2,27 @@ from datetime import datetime
 from flask_restful import fields
 
 
-class GroupDTO:
-
+class ConfigRepoDTO:
     fields = {
         "name": fields.String,
+        "connect_type": fields.String,
+        "address": fields.String,
         "usage": fields.String,
         "create_time": fields.DateTime(attribute="create_time"),
         "update_time": fields.DateTime(attribute="update_time")
-
     }
 
-    def __init__(self, name: str = None,
+    def __init__(self,
+                 name: str = None,
+                 connect_type: str = None,
+                 address: str = None,
                  usage: str = None,
                  create_time: datetime = datetime.utcnow(),
-                 update_time: datetime = datetime.utcnow(), ):
+                 update_time: datetime = datetime.utcnow()
+                 ):
         self.name = name
+        self.connect_type = connect_type
+        self.address = address
         self.usage = usage
         self.create_time = create_time
         self.update_time = update_time
@@ -26,6 +32,22 @@ class GroupDTO:
 
     def set_name(self, name: str):
         self.name = name
+
+    # ============================
+
+    def get_connect_type(self) -> str:
+        return self.connect_type
+
+    def set__type(self, connect_type: str):
+        self.connect_type = connect_type
+
+    # ============================
+
+    def get_address(self) -> str:
+        return self.address
+
+    def set_address(self, address: str):
+        self.address = address
 
     # ============================
 
@@ -49,4 +71,6 @@ class GroupDTO:
         return self.update_time
 
     def set_update_time(self, update_time: datetime):
-        self.update_time = update_time
+        self.create_time = update_time
+
+    # ============================

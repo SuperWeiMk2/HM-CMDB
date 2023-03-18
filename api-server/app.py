@@ -1,4 +1,5 @@
 import defaultInterface
+import model.group_model
 from api.account_api import AccountAPI
 from api.audit_api import AuditAPI
 from api.auth_api import AuthAPI

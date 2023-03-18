@@ -259,9 +259,9 @@ let columns = [{
 
 const pagination = reactive({
   page: 5,
-  pageSize: 100,
+  pageSize: 5,
   showSizePicker: true,
-  pageSizes: [10, 50, 100],
+  pageSizes: [5, 10, 20, 50, 100],
   onChange: (page) => {
     pagination.page = page;
   },

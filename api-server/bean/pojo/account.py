@@ -2,8 +2,9 @@ from datetime import datetime
 
 
 class Account:
-    def __init__(self, name: str = None,
-                 username: str = None,
+    def __init__(self, uid: str = None,
+                 name: str = None,
+                 job_number: str = None,
                  password: str = None,
                  phone: str = None,
                  email: str = None,
@@ -13,8 +14,9 @@ class Account:
                  create_time: datetime = datetime.utcnow(),
                  update_time: datetime = datetime.utcnow(),
                  is_delete: bool = None):
+        self.__uid = uid
         self.__name = name
-        self.__username = username
+        self.__job_number = job_number
         self.__password = password
         self.__phone = phone
         self.__email = email
@@ -25,6 +27,13 @@ class Account:
         self.__update_time = update_time
         self.__is_delete = is_delete
 
+    def get_uid(self) -> str:
+        return self.__uid
+
+    def set_uid(self, uid: str):
+        self.__uid = uid
+
+    # ============================
     def get_name(self) -> str:
         return self.__name
 
@@ -33,11 +42,11 @@ class Account:
 
     # ============================
 
-    def get_username(self) -> str:
-        return self.__username
+    def get_job_number(self) -> str:
+        return self.__job_number
 
-    def set_username(self, username: str):
-        self.__username = username
+    def set_job_number(self, job_number: str):
+        self.__job_number = job_number
 
     # ============================
 

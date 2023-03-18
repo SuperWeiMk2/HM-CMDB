@@ -65,19 +65,19 @@
         <span>清空搜索条件</span>
       </n-tooltip>
     </div>
-    <n-data-table striped :columns="columns" :data="repo" :pagination="pagination"/>
+    <n-data-table striped :columns="columns" :data="repos" :pagination="pagination"/>
     <n-modal v-model:show="isShowAddModal" :mask-closablef="false" preset="card" title="添加存储库"
              :on-after-leave="onAddModalAfterLeave" :segmented="false" style="width: 45%; min-width: 600px">
       <div style="display: flex;width: 100%; height: 100%; flex-direction: column">
         <div style="width: 100%; ">
           <div style="font-size: 12pt; font-weight: bold;">名称</div>
-          <n-input type="text" placeholder="必填, 请输入名称" style="margin-bottom: 10px; max-width: 350px"/>
+          <n-input v-model:value="createRepoName" type="text" placeholder="必填, 请输入名称" style="margin-bottom: 10px; max-width: 350px"/>
           <div style="font-size: 12pt; font-weight: bold;">类型</div>
-          <n-select type="text" placeholder="必填, 请选择类型" style="margin-bottom: 10px; max-width: 150px"/>
+          <n-select v-model:value="createRepoType" :options="repoConnectTypeSelectOptions" type="text" placeholder="必填, 请选择类型" style="margin-bottom: 10px; max-width: 150px"/>
           <div style="font-size: 12pt; font-weight: bold;">地址</div>
-          <n-input type="text" placeholder="必填, 请输入地址" style="margin-bottom: 10px; max-width: 500px"/>
+          <n-input v-model:value="createRepoAddress" type="text" placeholder="必填, 请输入地址" style="margin-bottom: 10px; max-width: 500px"/>
           <div style="font-size: 12pt; font-weight: bold;">用途</div>
-          <n-input type="text" placeholder="必填, 请输入用途" style="margin-bottom: 10px;"/>
+          <n-input v-model:value="createRepoUsage" type="text" placeholder="必填, 请输入用途" style="margin-bottom: 10px;"/>
         </div>
         <div style="display: flex; width: 100%; height: 100%; justify-content: flex-end; margin-top: 10px">
           <n-button @click="onAddModalFailed" style="margin-right: 10px;">取&nbsp;消</n-button>
@@ -106,11 +106,11 @@
       <div style="display: flex;width: 100%; height: 100%; flex-direction: column">
         <div style="width: 100%; ">
           <div style="font-size: 12pt; font-weight: bold;">类型</div>
-          <n-select type="text" placeholder="必填, 请选择类型" style="margin-bottom: 10px; max-width: 150px"/>
+          <n-select v-model:value="updateByType" type="text" :options="repoConnectTypeSelectOptions" placeholder="必填, 请选择类型" style="margin-bottom: 10px; max-width: 150px"/>
           <div style="font-size: 12pt; font-weight: bold;">地址</div>
-          <n-input type="text" placeholder="必填, 请输入地址" style="margin-bottom: 10px; max-width: 500px"/>
+          <n-input v-model:value="updateByAddress" type="text" placeholder="必填, 请输入地址" style="margin-bottom: 10px; max-width: 500px"/>
           <div style="font-size: 12pt; font-weight: bold;">用途</div>
-          <n-input type="text" placeholder="必填, 请输入用途" style="margin-bottom: 10px;"/>
+          <n-input v-model:value="updateByUsage" type="text" placeholder="必填, 请输入用途" style="margin-bottom: 10px;"/>
         </div>
         <div style="display: flex; width: 100%; height: 100%; justify-content: flex-end; margin-top: 10px">
           <n-button @click="onModifyModalFailed" style="margin-right: 10px;">取&nbsp;消</n-button>
@@ -123,16 +123,66 @@
 </template>
 
 <script setup>
-import {h, reactive, ref} from "vue";
+import {getCurrentInstance, h, onMounted, reactive, ref} from "vue";
 import {NButton, NTag, useDialog, useMessage} from "naive-ui";
 import {SearchOutlined, CloseOutlined, DeleteOutlined, PlusOutlined} from "@vicons/antd"
 import TableOperationAreaButtonGroup from "@/components/TableOperationAreaButtonGroup.vue";
 
+const {proxy} = getCurrentInstance();
 const dialog = useDialog()
 const message = useMessage()
 
+
+let createRepoName = ref("")
+let createRepoType = ref("")
+let createRepoAddress = ref("")
+let createRepoUsage = ref("")
+
+let updateByType = ref("")
+let updateByAddress = ref("")
+let updateByUsage = ref("")
+
+let repos = ref([])
 let repoName = ref("")
 let repoConnectTypeSelectOptionValue = ref(null)
+
+let now_Row = ref("")
+
+onMounted( () => {
+  handleSearchAll()
+})
+
+function handleSearchAll() {
+  proxy.$axios.get("/api/config_repo/", {}).then( r => {
+    if (r.status === 200) {
+      const content = r.data
+      if (content["code"] === "10000") {
+        const data = content["data"]
+        let result = [];
+        console.log("标记")
+        console.log("data", data)
+        data.map((item) => {
+          result.push({
+              "name": item["name"],
+              "connect_type": item["connect_type"],
+              "address": item["address"],
+              "usage": item["usage"],
+              "create_time": item["create_time"],
+              "update_time": item["update_time"],
+          })
+        });
+
+        repos.value = result;
+      } else {
+      }
+    } else {
+      console.error(r.status)
+    }
+  }).catch( (err) => {
+    message.error(err)
+  })
+}
+
 let repoConnectTypeSelectOptions = [
   {
     label: "全部",
@@ -143,21 +193,12 @@ let repoConnectTypeSelectOptions = [
     value: "SSH",
   },
   {
-    label: "HTTP/HTPPS",
+    label: "HTTP/HTTPS",
     value: "HTTP/HTTPS",
   },
 ]
+
 let repoUsage = ref("")
-
-
-let repo = ref([{
-  "key": "0",
-  "name": "WWW",
-  "connect-type": "SSH",
-  "location": "WWW.XXX",
-  "create-time": "2023/2/1 12:32:03",
-  "usage": "用于测试环境的 Web 集群负载均衡配置。",
-}]);
 
 let columns = [{
   type: "selection",
@@ -168,23 +209,25 @@ let columns = [{
   fixed: "left",
 }, {
   title: "类型",
-  key: "connect-type",
+  key: "connect_type",
   width: 100
 }, {
   title: "地址",
-  key: "location",
+  key: "address",
   width: 500
-}, {
-  title: "添加时间",
-  key: "create-time",
-  width: 220
 }, {
   title: "用途",
   key: "usage",
   resizable: true
-},
-
-  {
+}, {
+  title: "添加时间",
+  key: "create_time",
+  width: 220
+}, {
+  title: "更新时间",
+  key: "update_time",
+  width: 220
+}, {
     title: "操作",
     key: "op",
     render(row) {
@@ -198,6 +241,8 @@ let columns = [{
             },
             onModifyButtonClicked: () => {
               isShowModifyModal.value = true;
+
+              now_Row = row
             },
             onDeleteButtonClicked: () => {
             },
@@ -227,6 +272,25 @@ function onDetailModalAfterLeave() {
 
 function onAddModalOk() {
   isShowAddModal.value = false;
+
+  let repoName = createRepoName.value
+  let repoType = createRepoType.value
+  let repoAddress = createRepoAddress.value
+  let repoUsage = createRepoUsage.value
+
+  proxy.$axios.put("/api/config_repo/", {
+    name: repoName,
+    type: repoType,
+    address: repoAddress,
+    usage: repoUsage
+  }).then( (res) => {
+    if (res.status === 200) {
+      handleSearchAll()
+      message.success("远程仓库创建成功！")
+    }
+  }).catch( err => {
+    message.error("远程仓库创建失败")
+  })
 }
 
 function onAddModalFailed() {
@@ -243,6 +307,25 @@ function onModifyModalFailed() {
 
 function onModifyModalOk() {
   isShowModifyModal.value = false;
+
+  let name = now_Row["name"]
+  message.success(name)
+  let update_type = updateByType.value
+  let update_Address = updateByAddress.value
+  let update_usage = updateByUsage.value
+
+  proxy.$axios.put("/api/config_repo/" + name, {
+    connect_type: update_type,
+    address: update_Address,
+    usage: update_usage,
+  }).then(r => {
+    if (r.status === 200) {
+      message.success("数据更新成功！")
+      handleSearchAll()
+    }
+  }).catch( err => {
+    console.log(err)
+    message.error("数据更新失败")})
 }
 
 function handleAddButtonClicked() {
@@ -262,10 +345,10 @@ function handleBatchDeleteButtonClicked() {
 }
 
 const pagination = reactive({
-  page: 5,
-  pageSize: 100,
+  page: 1,
+  pageSize: 10,
   showSizePicker: true,
-  pageSizes: [10, 50, 100],
+  pageSizes: [5, 10, 20, 50, 100],
   onChange: (page) => {
     pagination.page = page;
   },

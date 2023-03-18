@@ -3,7 +3,7 @@ settings = {
         {
             "name": "default",
             "type": "mongodb",
-            "host": "192.168.79.191",
+            "host": "localhost",
             "port": "27017",
             "database": "db_hm_cmdb"
         }

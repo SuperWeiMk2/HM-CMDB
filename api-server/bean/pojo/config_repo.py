@@ -3,16 +3,19 @@ from datetime import datetime
 
 class ConfigRepo:
     def __init__(self, name: str = None,
+                 connect_type: str = None,
                  address: str = None,
+                 usage: str = None,
                  create_time: datetime = datetime.utcnow(),
                  update_time: datetime = datetime.utcnow(),
-                 _type: str = None,
+
                  is_delete: bool = None):
         self.__name = name
+        self.__connect_type = connect_type
         self.__address = address
+        self.__usage = usage
         self.__create_time = create_time
         self.__update_time = update_time
-        self.__type = _type
         self.__is_delete = is_delete
 
     def get_name(self) -> str:
@@ -20,6 +23,14 @@ class ConfigRepo:
 
     def set_name(self, name: str):
         self.__name = name
+
+    # ============================
+
+    def get_usage(self) -> str:
+        return self.__usage
+
+    def set_usage(self, usage: str):
+        self.__usage = usage
 
     # ============================
 
@@ -47,11 +58,11 @@ class ConfigRepo:
 
     # ============================
 
-    def get_type(self) -> str:
-        return self.__type
+    def get_connect_type(self) -> str:
+        return self.__connect_type
 
-    def set_type(self, _type: str):
-        self.__type = _type
+    def set_type(self, connect_type: str):
+        self.__connect_type = connect_type
 
     # ============================
 

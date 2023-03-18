@@ -99,7 +99,7 @@
           <n-select placeholder="必填, 请选择所属群组" style="margin-bottom: 10px; max-width: 200px"/>
           <div style="font-size: 12pt; font-weight: bold;">业务需求</div>
           <n-input type="text" placeholder="必填, 请输入业务需求" style="margin-bottom: 10px;"/>
-<!--          TODO 应该有地方向安全组中添加机器和安全组-->
+<!--          TODO 应该有地方向安全组中添加机器和安全组,之后添加。-->
 <!--          <div style="font-size: 12pt; font-weight: bold;">安全组</div>-->
 <!--          <n-input type="textarea" row="10" placeholder="选填, 请输入安全组名称, 使用英文半角小写逗号分隔" style="margin-bottom: 10px;"/>-->
         </div>
@@ -281,9 +281,9 @@ let columns = [{
 
 const pagination = reactive({
   page: 5,
-  pageSize: 100,
+  pageSize: 5,
   showSizePicker: true,
-  pageSizes: [10, 50, 100],
+  pageSizes: [5, 10, 20, 50, 100],
   onChange: (page) => {
     pagination.page = page;
   },
