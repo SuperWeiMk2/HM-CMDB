@@ -71,7 +71,7 @@
         <span>清空搜索条件</span>
       </n-tooltip>
     </div>
-    <n-data-table striped :columns="columns" :data="accounts" :pagination="pagination" :row-key="rowKey" @update:checked-row-keys="handleUpdateCheckedRowKeys"/>
+    <n-data-table striped :columns="columns" :data="accounts" :pagination="pagination" @update:checked-row-keys="handleUpdateCheckedRowKeys"/>
     <n-modal v-model:show="isShowAddModal" :mask-closablef="false" preset="card" title="添加成员"
              :on-after-leave="onAddModalAfterLeave" :segmented="false" style="width: 45%; min-width: 600px">
       <div style="display: flex;width: 100%; height: 100%; flex-direction: column">
@@ -226,7 +226,6 @@ let roleSelectOptions  = [
 ]
 
 onMounted(() => {
-  console.log(accounts)
   handleSearchAll()
 })
 
@@ -338,6 +337,7 @@ function handleSearchAll() {
         data.map((item) => {
           result.push({
             "uid": item["uid"],
+            "key": item["uid"],
             "name": item["name"],
             "job_number": item["job_number"],
             "group": item["group"],
@@ -360,8 +360,9 @@ function handleSearchAll() {
   })
 }
 
-function handleUpdateCheckedRowKeys() {
-  checkedRowKeysRef.value = now_Row
+function handleUpdateCheckedRowKeys(rowKeys) {
+  checkedRowKeysRef.value = rowKeys
+  console.log(rowKeys)
 }
 
 function onPositiveClick() {
@@ -399,12 +400,30 @@ function handleBatchEmptyButtonClicked() {
 
 function handleBatchDeleteButtonClicked() {
   dialog.warning({
-    title: "批量删除",
-    content: "即将删除 24 个条目, 是否继续?",
+    title: "即将执行批量删除动作!",
+    content: "即将删除" + checkedRowKeysRef.value.length + "条数据, 是否继续?",
     positiveText: "确定",
     negativeText: "取消",
     onPositiveClick: () => {
-      message.success("删除成功!")
+
+      console.log(checkedRowKeysRef.value)
+
+      let is_delete = checkedRowKeysRef.value
+      console.log(is_delete[0])
+      console.log(typeof is_delete)
+      proxy.$axios.delete("/api/account/Remove", {
+        data: {
+          data: is_delete,
+        }
+      }).then(r => {
+        if ( r.status === 200) {
+          handleSearchAll()
+          message.success("已删除" + " " + is_delete.length + " " + "条数据 !")
+        }
+      }).catch(err => {
+
+      })
+
     },
   })
 }
@@ -425,10 +444,6 @@ const memberSexSelectOptions = [
 let columns = [{
   type: "selection",
   fixed: "left",
-  disabled(row) {
-    row_now = row.address
-    return row.address
-  }
 }, {
   title: "姓名",
   key: "name",
@@ -479,7 +494,7 @@ let columns = [{
     render(row) {
       return h(
           TableOperationAreaButtonGroup, {
-            isShowDetail: true,
+            isShowDetail: false,
             isShowModify: true,
             isShowDelete: true,
             onDetailButtonClicked: () => {

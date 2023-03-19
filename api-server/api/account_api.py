@@ -97,7 +97,8 @@ class AccountAPI:
         create_time = datetime.utcnow()
         update_time = datetime.utcnow()
 
-        AccountService.create_account(uid, name, job_number, group, phone, email, sex, arch_group, create_time, update_time)
+        AccountService.create_account(uid, name, job_number, group, phone, email, sex, arch_group, create_time,
+                                      update_time)
         return {}
 
     # @staticmethod
@@ -120,8 +121,8 @@ class AccountAPI:
         """
         p_uid_list = RequestUtil.get_param_from_body_raw_json_as_list(request)
 
-        if len(p_uid_list) > 0:
-            AccountService.delete_account(p_uid_list)
+        # if len(p_uid_list) > 0:
+        #     AccountService.delete_account(p_uid_list)
 
         return {}
 
@@ -167,3 +168,13 @@ class AccountAPI:
         else:
             return {}
 
+    @staticmethod
+    @api.route("/Remove", methods=("DELETE",))
+    def batch_delete_account():
+        uid_list = RequestUtil.get_param_from_body_raw_json(request, "data")
+        print(uid_list)
+        print("标记1")
+        if AccountService.batch_delete_account(uid_list):
+            return {}
+        else:
+            return {}

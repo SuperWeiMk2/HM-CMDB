@@ -54,6 +54,13 @@ class AccountModel:
         return result
 
     @staticmethod
+    def batch_delete_account(uid_list):
+        print("标记2")
+        result = Server.datasource["default"].db["account"].delete_many({"uid": {"$in": uid_list}})
+
+        return result
+
+    @staticmethod
     def update_account_by_uid(uid, name, job_number, group, phone, email, sex, arch_group, update_time):
         result = Server.datasource["default"].db["account"] \
             .update_one({"uid": uid}, {"$set": {"name": name, "job_number": job_number, "group": group,

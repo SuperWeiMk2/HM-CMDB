@@ -31,8 +31,8 @@ class AccountService:
         return AccountModel.delete_account_by_job_number(delete_by_job_number)
 
     @staticmethod
-    def delete_account(uid):
-        pass
+    def batch_delete_account(uid_list):
+        return AccountModel.batch_delete_account(uid_list)
 
     @staticmethod
     def update_account(uid, name, job_number, group, phone, email, sex, arch_group, update_time):
