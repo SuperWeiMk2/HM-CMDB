@@ -5,6 +5,7 @@ from api.audit_api import AuditAPI
 from api.auth_api import AuthAPI
 from api.config_repo_api import ConfigRepoAPI
 from api.group_api import GroupAPI
+from api.logon_api import LogonAPI
 from api.machine_api import MachineAPI
 from api.res_pool_api import ResPoolAPI
 from api.safe_group_api import SafeGroupAPI
@@ -26,6 +27,7 @@ Server.app.register_blueprint(ServiceAPI.api)
 Server.app.register_blueprint(TaskAPI.api)
 Server.app.register_blueprint(OverViewAPI.api)
 Server.app.register_blueprint(defaultInterface.DefaultInterface.api)
+Server.app.register_blueprint(LogonAPI.api)
 
 app = Server.app
 

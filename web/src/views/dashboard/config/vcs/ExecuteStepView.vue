@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="step-op-area">
-          <n-button strong style="margin-right: 10px;">取&nbsp;消</n-button>
+          <n-button strong @click="handleStepNextButtonClickedOnVcs" style="margin-right: 10px;">取&nbsp;消</n-button>
           <n-button strong style="margin-right: 10px;" type="primary" @click="handleStepNextButtonClicked"
                     :loading="submitButtonLoading">提&nbsp;交
           </n-button>
@@ -57,6 +57,11 @@ onMounted(() => {
   emit('update-step-index', 4)
 })
 
+function handleStepNextButtonClickedOnVcs() {
+  router.push({
+    path: '/dashboard/config/vcs'
+  });
+}
 </script>
 
 <style scoped>

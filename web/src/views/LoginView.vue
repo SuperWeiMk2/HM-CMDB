@@ -22,7 +22,7 @@
         <n-input v-model:value="username" type="text" placeholder="请输入用户名"/>
       </div>
       <div class="box">
-        <n-input v-model:value="password" type="text" placeholder="请输入登录密码"/>
+        <n-input v-model:value="password" type="password" placeholder="请输入登录密码" show-password-on="mousedown"/>
       </div>
       <div class="text-box">
         <div class="about-text" @click="handleAboutLinkClicked">关于 HM CMDB</div>
@@ -38,11 +38,13 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
-import {useRouter} from 'vue-router';
+import {getCurrentInstance, onMounted, ref} from 'vue';
+import {useRouter,} from 'vue-router';
+import {NButton, useDialog, useMessage} from "naive-ui";
 
 const router = useRouter()
-
+const {proxy} = getCurrentInstance();
+const message = useMessage();
 
 let username = ref("");
 let password = ref("");
@@ -55,16 +57,30 @@ onMounted(() => {
 
 
 function handleLoginButtonClicked() {
-  router.push({
-    path: '/dashboard'
+  let user_name = username.value
+  let use_password = password.value
+
+  proxy.$axios.put("/api/logon/", {
+    name: user_name,
+    password: use_password,
+  }).then(r => {
+    if (r.data === 0) {
+      router.push({
+        path: '/dashboard'
+      })
+      message.success("系统已登陆！")
+    }
+  }).catch(err => {
+    console.log(err)
   })
+
+
 }
 
 function handleAboutLinkClicked() {
   router.push({
     path: '/about'
   })
-
 }
 
 </script>

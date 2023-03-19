@@ -2,14 +2,15 @@ from datetime import datetime
 
 
 class ConfigRepo:
-    def __init__(self, name: str = None,
+    def __init__(self, uid: str = None,
+                 name: str = None,
                  connect_type: str = None,
                  address: str = None,
                  usage: str = None,
                  create_time: datetime = datetime.utcnow(),
                  update_time: datetime = datetime.utcnow(),
-
                  is_delete: bool = None):
+        self.__uid = uid
         self.__name = name
         self.__connect_type = connect_type
         self.__address = address
@@ -17,6 +18,14 @@ class ConfigRepo:
         self.__create_time = create_time
         self.__update_time = update_time
         self.__is_delete = is_delete
+
+    def get_uid(self) -> str:
+        return self.__uid
+
+    def set_uid(self, uid: str):
+        self.__uid = uid
+
+    # ============================
 
     def get_name(self) -> str:
         return self.__name

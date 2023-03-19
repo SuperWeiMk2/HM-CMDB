@@ -17,7 +17,7 @@
                placeholder="请输入用途, 支持全文检索.."/>
       <n-tooltip placement="top" trigger="hover">
         <template #trigger>
-          <n-button secondary tertiary circle style="margin-left: 5px" type="info">
+          <n-button secondary tertiary circle style="margin-left: 5px" type="info" @click="handelConditionalSearch">
             <template #icon>
               <n-icon>
                 <search-outlined/>
@@ -105,6 +105,8 @@
              :on-after-leave="onModifyModalAfterLeave" :segmented="false" style="width: 45%; min-width: 600px">
       <div style="display: flex;width: 100%; height: 100%; flex-direction: column">
         <div style="width: 100%; ">
+          <div style="font-size: 12pt; font-weight: bold;">名称</div>
+          <n-input v-model:value="updateByAName" type="text" placeholder="必填, 请输入名称" style="margin-bottom: 10px; max-width: 300px"/>
           <div style="font-size: 12pt; font-weight: bold;">类型</div>
           <n-select v-model:value="updateByType" type="text" :options="repoConnectTypeSelectOptions" placeholder="必填, 请选择类型" style="margin-bottom: 10px; max-width: 150px"/>
           <div style="font-size: 12pt; font-weight: bold;">地址</div>
@@ -138,6 +140,7 @@ let createRepoType = ref("")
 let createRepoAddress = ref("")
 let createRepoUsage = ref("")
 
+let updateByAName = ref("")
 let updateByType = ref("")
 let updateByAddress = ref("")
 let updateByUsage = ref("")
@@ -159,10 +162,10 @@ function handleSearchAll() {
       if (content["code"] === "10000") {
         const data = content["data"]
         let result = [];
-        console.log("标记")
         console.log("data", data)
         data.map((item) => {
           result.push({
+              "uid": item["uid"],
               "name": item["name"],
               "connect_type": item["connect_type"],
               "address": item["address"],
@@ -181,6 +184,46 @@ function handleSearchAll() {
   }).catch( (err) => {
     message.error(err)
   })
+}
+
+function handelConditionalSearch() {
+
+  let repo_name = repoName.value
+  let repo_type = repoConnectTypeSelectOptionValue.value
+  let repo_usage = repoUsage.value
+
+  proxy.$axios.put("/api/config_repo/search", {
+    name: repo_name,
+    connect_type: repo_type,
+    usage: repo_usage,
+  }).then( r => {
+    if ( r.status === 200) {
+      const content = r.data
+      if (content["code"] === "10000") {
+        const data = content["data"]
+        let result = [];
+
+        data.map((item) => {
+          result.push({
+            "uid": item["uid"],
+            "name": item["name"],
+            "connect_type": item["connect_type"],
+            "address": item["address"],
+            "usage": item["usage"],
+            "create_time": item["create_time"],
+            "update_time": item["update_time"],
+          })
+        });
+
+    repos.value = result;
+  } else {
+  }
+} else {
+  console.error(r.status)
+}
+}).catch( (err) => {
+  message.error(err)
+})
 }
 
 let repoConnectTypeSelectOptions = [
@@ -280,7 +323,7 @@ function onAddModalOk() {
 
   proxy.$axios.put("/api/config_repo/", {
     name: repoName,
-    type: repoType,
+    connect_type: repoType,
     address: repoAddress,
     usage: repoUsage
   }).then( (res) => {
@@ -308,13 +351,16 @@ function onModifyModalFailed() {
 function onModifyModalOk() {
   isShowModifyModal.value = false;
 
-  let name = now_Row["name"]
-  message.success(name)
+  let uid = now_Row["uid"]
+  console.log(now_Row)
+  console.log(uid)
+  let update_name = updateByAName.value
   let update_type = updateByType.value
   let update_Address = updateByAddress.value
   let update_usage = updateByUsage.value
 
-  proxy.$axios.put("/api/config_repo/" + name, {
+  proxy.$axios.put("/api/config_repo/" + uid, {
+    name: update_name,
     connect_type: update_type,
     address: update_Address,
     usage: update_usage,

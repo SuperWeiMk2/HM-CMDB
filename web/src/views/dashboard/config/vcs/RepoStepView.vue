@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="step-op-area">
-          <n-button strong style="margin-right: 10px;">重&nbsp;做</n-button>
+          <n-button strong  style="margin-right: 10px;">重&nbsp;做</n-button>
           <n-button strong type="primary" @click="handleStepNextButtonClicked" :loading="nextButtonLoading">下&nbsp;一&nbsp;步</n-button>
         </div>
       </div>
@@ -50,6 +50,8 @@ let gitRepoCheckStatus = ref('doing');
 
 let nextButtonLoading = ref(false)
 
+
+
 function handleStepNextButtonClicked() {
   router.push({
     path: '/dashboard/config/vcs/directory-step'
@@ -59,6 +61,8 @@ function handleStepNextButtonClicked() {
 onMounted(() => {
   emit('update-step-index', 1)
 })
+
+
 
 </script>
 

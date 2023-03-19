@@ -4,6 +4,7 @@ from flask_restful import fields
 
 class ConfigRepoDTO:
     fields = {
+        "uid": fields.String,
         "name": fields.String,
         "connect_type": fields.String,
         "address": fields.String,
@@ -12,7 +13,7 @@ class ConfigRepoDTO:
         "update_time": fields.DateTime(attribute="update_time")
     }
 
-    def __init__(self,
+    def __init__(self, uid: str = None,
                  name: str = None,
                  connect_type: str = None,
                  address: str = None,
@@ -20,12 +21,21 @@ class ConfigRepoDTO:
                  create_time: datetime = datetime.utcnow(),
                  update_time: datetime = datetime.utcnow()
                  ):
+        self.uid = uid
         self.name = name
         self.connect_type = connect_type
         self.address = address
         self.usage = usage
         self.create_time = create_time
         self.update_time = update_time
+
+    def get_uid(self) -> str:
+        return self.uid
+
+    def set_uid(self, uid: str):
+        self.uid = uid
+
+    # ============================
 
     def get_name(self) -> str:
         return self.name

@@ -1,10 +1,7 @@
 import uuid
-
 from flask import request, Blueprint
 from datetime import datetime
-
 from flask_restful import marshal
-
 from bean.dto.account_dto import AccountDTO
 from core.response.generic_json_response import GenericJSONResponse
 from service.account_service import AccountService

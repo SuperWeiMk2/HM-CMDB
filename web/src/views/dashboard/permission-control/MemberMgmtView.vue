@@ -71,7 +71,7 @@
         <span>清空搜索条件</span>
       </n-tooltip>
     </div>
-    <n-data-table striped :columns="columns" :data="accounts" :pagination="pagination"/>
+    <n-data-table striped :columns="columns" :data="accounts" :pagination="pagination" :row-key="rowKey" @update:checked-row-keys="handleUpdateCheckedRowKeys"/>
     <n-modal v-model:show="isShowAddModal" :mask-closablef="false" preset="card" title="添加成员"
              :on-after-leave="onAddModalAfterLeave" :segmented="false" style="width: 45%; min-width: 600px">
       <div style="display: flex;width: 100%; height: 100%; flex-direction: column">
@@ -180,6 +180,7 @@ const message = useMessage()
 let accounts = ref([])
 let nowRow = ref()
 let now_Row = ref()
+let row_now = ref()
 
 let memberName = ref("");
 let memberNo = ref("");
@@ -208,6 +209,8 @@ let isShowAddModal = ref(false);
 let isShowModifyModal = ref(false);
 let isShowDetailModal = ref(false);
 let isShowDeleteModal = ref(false);
+
+const checkedRowKeysRef = ref([]);
 
 let roleSelectOptions  = [
   {
@@ -280,7 +283,6 @@ function onModifyModalFailed() {
 }
 
 function onModifyModalOk() {
-  // 未解决，先用工号替代 uid
   isShowModifyModal.value = false;
 
   let uid = now_Row["uid"]
@@ -358,6 +360,10 @@ function handleSearchAll() {
   })
 }
 
+function handleUpdateCheckedRowKeys() {
+  checkedRowKeysRef.value = now_Row
+}
+
 function onPositiveClick() {
 
   let job_number = nowRow["job_number"]
@@ -418,7 +424,11 @@ const memberSexSelectOptions = [
 
 let columns = [{
   type: "selection",
-  fixed: "left"
+  fixed: "left",
+  disabled(row) {
+    row_now = row.address
+    return row.address
+  }
 }, {
   title: "姓名",
   key: "name",
@@ -427,11 +437,11 @@ let columns = [{
 }, {
   title: "工号",
   key: "job_number",
-  width: 150
+  width: 120
 }, {
   title: "组",
   key: "group",
-  width: 200,
+  width: 100,
   fixed: "left"
 },
   {
@@ -441,7 +451,7 @@ let columns = [{
   }, {
     title: "工作邮箱",
     key: "email",
-    width: 220
+    width: 200
   },
   {
     title: "性别",
@@ -452,16 +462,17 @@ let columns = [{
     title: "组织架构",
     key: "arch_group",
     resizable: true,
+    width: 200
   },
 
   {
     title: "创建时间",
-    key: "create-time",
-    width: 200
+    key: "create_time",
+    width: 240
   }, {
     title: "最后一次修改时间",
     key: "update_time",
-    width: 200
+    width: 240
   }, {
     title: "操作",
     key: "op",
