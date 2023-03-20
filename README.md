@@ -14,6 +14,16 @@
 
 3、监控机房的机器。
 
+
+
+# 展示 Demo
+
+------
+
+[登录 HM CMDB](http://47.115.213.52/)     
+
+测试账号：admin           测试密码：1234
+
 # LICENSE
 
 - HM CMDB: [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -28,10 +38,3 @@
 
 
 
-# 展示 Demo
-
-------
-
-[登录 HM CMDB](http://47.115.213.52/)     
-
-测试账号：admin   测试密码：1234
